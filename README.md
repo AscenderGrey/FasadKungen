@@ -13,6 +13,7 @@ npm run dev
 Fyll i `.env.local` för att aktivera SMS-notiser från formuläret:
 
 - `ELKS_API_USERNAME` och `ELKS_API_PASSWORD`: 46elks API-uppgifter.
+- Lokalt kan även `46ELKS_API_USERNAME` och `46ELKS_API_PASSWORD` användas som fallback. På Vercel används `ELKS_API_USERNAME` och `ELKS_API_PASSWORD`.
 - `LEAD_NOTIFICATION_PHONE`: numret som ska få SMS om nya förfrågningar, i internationellt format.
 
 Utan dessa uppgifter visas ett professionellt felmeddelande i formuläret och inga förfrågningar rapporteras som skickade.
@@ -29,3 +30,5 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+Demo: `vercel.json` sätter `LEAD_NOTIFICATION_PHONE` till det godkända demonumret. Ändra eller ta bort denna miljökonfiguration när mottagaren ska bytas.

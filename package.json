@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/lead-validation.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "next": "15.5.25",

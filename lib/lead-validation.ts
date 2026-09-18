@@ -5,11 +5,20 @@ export type ValidationResult = { ok: true; data: ValidLead } | { ok: false; erro
 
 const compact = (value: unknown) => typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
 const emailOk = (value: string) => value === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-const phoneOk = (value: string) => /^[+()\d][\d\s()+-]{5,24}$/.test(value) && (value.match(/\d/g)?.length ?? 0) >= 6;
+function normalizeSwedishPhone(value: string) {
+  const compactPhone = value.replace(/[\s()-]/g, "");
+  let national: string;
+  if (compactPhone.startsWith("+46")) national = compactPhone.slice(3);
+  else if (compactPhone.startsWith("0046")) national = compactPhone.slice(4);
+  else if (compactPhone.startsWith("0")) national = compactPhone.slice(1);
+  else return "";
+  if (!/^\d{7,10}$/.test(national) || national.startsWith("0")) return "";
+  return `+46${national}`;
+}
 
 export function validateLead(input: Record<string, unknown>): ValidationResult {
   const name = compact(input.name);
-  const phone = compact(input.phone);
+  const phone = normalizeSwedishPhone(compact(input.phone));
   const email = compact(input.email);
   const area = compact(input.area);
   const service = compact(input.service);
@@ -17,8 +26,8 @@ export function validateLead(input: Record<string, unknown>): ValidationResult {
   const errors: Record<string, string> = {};
   if (name.length < 2) errors.name = "Skriv ditt namn.";
   if (name.length > 80) errors.name = "Namnet är för långt.";
-  if (!phoneOk(phone)) errors.phone = "Skriv ett telefonnummer vi kan nå dig på.";
-  if (phone.length > 32) errors.phone = "Telefonnumret är för långt.";
+  if (!phone) errors.phone = "Skriv ett telefonnummer vi kan nå dig på.";
+  if (typeof input.phone === "string" && input.phone.length > 32) errors.phone = "Telefonnumret är för långt.";
   if (!emailOk(email)) errors.email = "Skriv en giltig e-postadress.";
   if (email.length > 120) errors.email = "E-postadressen är för lång.";
   if (area.length < 2) errors.area = "Skriv ort eller område.";

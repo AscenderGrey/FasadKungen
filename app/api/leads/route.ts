@@ -34,8 +34,8 @@ export async function POST(request: Request) {
   const validation = validateLead(body);
   if (!validation.ok) return NextResponse.json({ errors: validation.errors }, { status: 422 });
 
-  const username = process.env.ELKS_API_USERNAME;
-  const password = process.env.ELKS_API_PASSWORD;
+  const username = process.env["ELKS_API_USERNAME"] ?? process.env["46ELKS_API_USERNAME"];
+  const password = process.env["ELKS_API_PASSWORD"] ?? process.env["46ELKS_API_PASSWORD"];
   const to = process.env.LEAD_NOTIFICATION_PHONE;
   if (!username || !password || !to) {
     console.error("Lead notification is not configured");
